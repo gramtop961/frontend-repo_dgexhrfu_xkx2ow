@@ -4,43 +4,102 @@
 
 @layer base {
   :root {
-    --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    --font-geist: 'Geist', system-ui, sans-serif;
-    --font-geist-mono: 'Geist Mono', monospace;
-    --font-mona: 'Mona Sans', system-ui, sans-serif;
-    --font-ibm-plex: 'IBM Plex Sans', system-ui, sans-serif;
-    --font-manrope: 'Manrope', system-ui, sans-serif;
+    --font-sans: 'Inter', 'Poppins', 'Space Grotesk', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
-
-  html {
-    font-family: var(--font-sans);
-    font-feature-settings: "rlig" 1, "calt" 1;
-  }
-
-  body {
-    @apply antialiased;
-  }
+  html { font-family: var(--font-sans); font-feature-settings: "rlig" 1, "calt" 1; }
+  body { @apply antialiased bg-[#0a0f0f]; }
 }
 
-/* Custom utility classes for shadcn/ui patterns */
+/* Keyframes */
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0.35), 0 0 24px rgba(20,184,166,0.25); }
+  50% { box-shadow: 0 0 0 6px rgba(16,185,129,0.08), 0 0 36px rgba(20,184,166,0.35); }
+}
+@keyframes shimmer {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+@keyframes spinSlow { to { transform: rotate(360deg); } }
+@keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+@keyframes popUp { 0% { transform: translateY(8px) scale(.96); opacity: 0 } 100% { transform: translateY(0) scale(1); opacity: 1 } }
+@keyframes revealIn { from { opacity: 0; transform: translateY(16px) } to { opacity: 1; transform: translateY(0) } }
+
+/* Utilities */
 @layer utilities {
-  .animate-in {
-    animation-name: animateIn;
-    animation-duration: 350ms;
-    --tw-enter-opacity: initial;
-    --tw-enter-scale: initial;
-    --tw-enter-rotate: initial;
-    --tw-enter-translate-x: initial;
-    --tw-enter-translate-y: initial;
+  .animate-shimmer { background-size: 200% 100%; animation: shimmer 1.6s linear infinite; }
+  .animate-fade-in { animation: fadeIn .25s ease forwards; }
+  .animate-pop-up { animation: popUp .35s cubic-bezier(.22,.99,.32,1) forwards; }
+  .reveal { opacity: 0; transform: translateY(16px); }
+  .reveal-in { animation: revealIn .6s ease forwards; }
+  .badge-dot { @apply inline-block w-2.5 h-2.5 rounded-full; box-shadow: 0 0 12px currentColor; }
+}
+
+/* Components */
+@layer components {
+  .glass {
+    @apply bg-white/5 backdrop-blur-md; 
+    box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.06), 0 10px 30px rgba(0,0,0,0.35);
+  }
+  .btn-neon {
+    @apply relative inline-flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-medium text-emerald-50; 
+    background: linear-gradient(135deg, rgba(16,185,129,0.25), rgba(20,184,166,0.18));
+    border: 1px solid rgba(52,211,153,0.35);
+    box-shadow: 0 10px 30px rgba(16,185,129,0.18), inset 0 1px 0 rgba(255,255,255,0.08);
+    transition: transform .12s ease, box-shadow .2s ease, filter .2s ease;
+  }
+  .btn-neon:hover { transform: translateY(-1px); filter: brightness(1.05); box-shadow: 0 12px 36px rgba(20,184,166,0.35); }
+  .btn-neon:active { transform: translateY(0); }
+
+  .btn-outline {
+    @apply inline-flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-medium text-teal-200; 
+    background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+    border: 1px solid rgba(94,234,212,0.25);
+    transition: all .15s ease;
+  }
+  .btn-outline:hover { box-shadow: 0 8px 26px rgba(94,234,212,0.18); border-color: rgba(94,234,212,0.4); }
+
+  .btn-ghost { @apply px-4 py-2 rounded-lg text-sm text-white/70 hover:text-white/90; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.03); }
+
+  .btn-shutter {
+    @apply relative inline-flex items-center justify-center px-6 py-3 rounded-full text-sm font-medium text-emerald-100;
+    background: radial-gradient(120% 120% at 50% 0%, rgba(16,185,129,0.35), rgba(20,184,166,0.15));
+    border: 1px solid rgba(16,185,129,0.45);
+    box-shadow: 0 10px 30px rgba(16,185,129,0.22);
+  }
+  .btn-shutter::after { content: ""; position: absolute; inset: 6px; border-radius: 9999px; border: 2px solid rgba(94,234,212,0.35); animation: glowPulse 2.2s ease-in-out infinite; }
+
+  .upload-zone {
+    @apply cursor-pointer rounded-xl border border-dashed border-emerald-400/40 p-8 text-center bg-white/5 hover:bg-white/10 transition;
+  }
+  .icon-circle {
+    @apply mx-auto mb-3 w-16 h-16 rounded-full grid place-items-center bg-emerald-500/10 border border-emerald-400/30; 
+    box-shadow: 0 8px 26px rgba(16,185,129,0.2);
   }
 
-  .animate-out {
-    animation-name: animateOut;
-    animation-duration: 350ms;
-    --tw-exit-opacity: initial;
-    --tw-exit-scale: initial;
-    --tw-exit-rotate: initial;
-    --tw-exit-translate-x: initial;
-    --tw-exit-translate-y: initial;
+  .loader {
+    width: 22px; height: 22px; border-radius: 9999px; border: 3px solid rgba(16,185,129,0.15); border-top-color: rgb(52,211,153); animation: spinSlow 1s linear infinite;
   }
+
+  .scan-frame { box-shadow: inset 0 0 0 2px rgba(16,185,129,0.35), inset 0 0 40px rgba(16,185,129,0.15); }
+
+  .card-step { @apply glass p-6 rounded-2xl border border-white/10 flex flex-col gap-3 hover:translate-y-[-2px] transition; }
+  .icon-chip { @apply w-12 h-12 rounded-xl grid place-items-center bg-emerald-500/10 border border-emerald-400/40 text-emerald-300; }
+
+  .chip { @apply px-3 py-1.5 rounded-full text-sm border border-white/10 text-white/60 bg-white/5; }
+  .chip-active { @apply border-emerald-400/40 text-emerald-300 bg-emerald-500/10 shadow-[0_0_24px_rgba(16,185,129,0.25)]; }
+
+  .status-pill { @apply inline-flex items-center px-3 py-1.5 rounded-full border text-sm; }
+
+  .social-glow { @apply relative inline-flex items-center justify-center w-10 h-10 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 transition; }
+  .social-glow:hover { box-shadow: 0 10px 30px rgba(94,234,212,0.2), inset 0 1px 0 rgba(255,255,255,.08); }
+
+  .floating-icons { position: absolute; inset: 0; overflow: hidden; opacity: .7; }
+  .floating-icons .leaf, .floating-icons .recycle, .floating-icons .earth { position: absolute; width: 14px; height: 14px; border-radius: 9999px; filter: blur(2px); opacity: .6; }
+  .floating-icons .leaf { left: 10%; top: 30%; background: rgba(52,211,153,0.6); box-shadow: 0 0 24px rgba(52,211,153,0.6); animation: float1 14s linear infinite; }
+  .floating-icons .recycle { left: 50%; top: 10%; background: rgba(45,212,191,0.6); box-shadow: 0 0 24px rgba(45,212,191,0.6); animation: float2 18s linear infinite; }
+  .floating-icons .earth { right: 12%; bottom: 18%; background: rgba(163,230,53,0.6); box-shadow: 0 0 24px rgba(163,230,53,0.6); animation: float3 20s linear infinite; }
 }
+
+@keyframes float1 { 0% { transform: translateY(0) } 50% { transform: translateY(-18px) } 100% { transform: translateY(0) } }
+@keyframes float2 { 0% { transform: translateY(0) } 50% { transform: translateY(22px) } 100% { transform: translateY(0) } }
+@keyframes float3 { 0% { transform: translateY(0) } 50% { transform: translateY(-14px) } 100% { transform: translateY(0) } }
